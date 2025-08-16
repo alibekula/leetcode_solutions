@@ -1,4 +1,5 @@
-# Last updated: 16.08.2025, 16:11:52
+# Last updated: 16.08.2025, 16:28:14
+import heapq
 class Solution:
     def _find(self, node):
         if self.roots[node] == node:
@@ -26,27 +27,33 @@ class Solution:
     def minCostConnectPoints(self, points: List[List[int]]) -> int:
         n = len(points)
         points = [tuple(point) for point in points]
-        self.roots = {key: value for key, value in zip(points, points)}
-
-        edges = []
+        graph = {key: [] for key in points} 
 
         for i in range(n):
             x = points[i]
             for j in range(i+1, n):
                 y = points[j]
                 dist = self._calc_dist(x, y)
-                edges.append([dist, x, y])
+                graph[x].append([dist, y])
+                graph[y].append([dist, x])
         
-        edges.sort(key=lambda x: x[0])
-        sum_weight = 0
-        num_nodes = 0
+        visited = set()
+        heap = []
+        heapq.heappush(heap, [0, points[0]])
+        sum_dist = 0
 
-        for w, x, y in edges:
-            if self._union(x, y):
-                num_nodes += 1
-                sum_weight += w
+        while len(visited) < n:
+            dist, point = heapq.heappop(heap)
 
-                if num_nodes == n-1:
-                    return sum_weight
+            if point in visited:
+                continue
 
-        return sum_weight
+            visited.add(point)
+            sum_dist += dist
+
+            for new_dist, adj in graph[point]:
+                if adj not in visited:      
+                    heapq.heappush(heap, [new_dist, adj])
+        
+        return sum_dist
+        
