@@ -1,18 +1,16 @@
-# Last updated: 19.08.2025, 03:56:49
+# Last updated: 19.08.2025, 05:27:06
 class Solution:
-    def searchInsert(self, nums: List[int], target: int) -> int:
+    def longestCommonSubsequence(self, text1: str, text2: str) -> int:
         
-        l, r = 0, len(nums)-1
+        n, m = len(text1), len(text2)
 
-        while l <= r:
-            mid = (l+r)//2
+        dp = [[0 for _ in range(m+1)] for _ in range(n+1)]
 
-            if nums[mid] == target:
-                return mid
-            
-            if nums[mid] > target:
-                r = mid - 1 
-            else:
-                l = mid + 1
+        for i in range(n):
+            for j in range(m):
+                if text1[i] == text2[j]:
+                    dp[i+1][j+1] = dp[i][j] + 1
+                else:
+                    dp[i+1][j+1] = max(dp[i][j+1], dp[i+1][j])
         
-        return l
+        return dp[n][m]
