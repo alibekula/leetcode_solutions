@@ -1,30 +1,20 @@
-# Last updated: 13.08.2025, 17:00:55
+# Last updated: 18.08.2025, 13:07:01
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        sett = set()
         ans = []
 
-        def dfs(curr, path=None):
-            nonlocal target
+        def dfs(curr, s, pos):
+            if curr == 0:
+                ans.append(s[:])
             
-            path = path if path is not None else []
-
-            if tuple(sorted(path)) not in sett and curr == target:
-                ans.append(path[:])
-                sett.add(tuple(sorted(path)))
+            if curr < 0:
+                return 
             
-            if curr > target:
-                return
-
-            for num in candidates:
-                path.append(num)
-                dfs(curr+num, path)
-                path.pop()
+            for i in range(pos, len(candidates)):
+                s.append(candidates[i])
+                dfs(curr - candidates[i], s, i)
+                s.pop()
         
-        dfs(0)
+        dfs(target, [],0)
 
         return ans
-            
-
-            
-        
