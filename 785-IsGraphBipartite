@@ -1,46 +1,18 @@
-# Last updated: 18.08.2025, 11:26:57
+# Last updated: 18.08.2025, 11:56:23
 class Solution:
-    
-    def _add(self, a, b):
+    def subsets(self, nums: List[int]) -> List[List[int]]:
+        ans = []
 
-        carry = 0
-        ans = 0
+        def dfs(i, s):
 
-        for i in range(32):
-            bit1 = (a>>i) & 1
-            bit2 = (b>>i) & 1
+            ans.append(s[:])
 
-            if bit1 == bit2:
-                # 0 - 0
-                if bit1 == 0 and bit2 == 0:
-                    bit_res = carry
-                    carry = 0
-                else:
-                    bit_res = carry
-                    carry = 1
-            else:# bit1 != bit2
-                if carry:
-                    bit_res = 0
-                    carry = 1
-                else:
-                    bit_res = 1
-                    carry = 0
+            for j in range(i, len(nums)):
+                s.append(nums[j])
 
-            ans |= (bit_res << i) 
+                dfs(j+1, s)
+
+                s.pop()
         
+        dfs(0, [])
         return ans
-
-
-    def getSum(self, a: int, b: int) -> int:
-        mask = 2**32-1
-
-        a = mask&a
-        b = mask&b
-
-        ans = self._add(a, b)
-
-        if ans >= 2 **31:
-            return -(2**32 - ans)
-        
-        return ans
-        
