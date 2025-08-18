@@ -1,18 +1,23 @@
-# Last updated: 18.08.2025, 13:07:01
+# Last updated: 18.08.2025, 13:10:26
 class Solution:
     def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
         ans = []
+        candidates.sort()
 
         def dfs(curr, s, pos):
             if curr == 0:
                 ans.append(s[:])
-            
-            if curr < 0:
-                return 
+
             
             for i in range(pos, len(candidates)):
-                s.append(candidates[i])
-                dfs(curr - candidates[i], s, i)
+
+                candidate = candidates[i]
+
+                if curr - candidate < 0:
+                    break
+
+                s.append(candidate)
+                dfs(curr - candidate, s, i)
                 s.pop()
         
         dfs(target, [],0)
