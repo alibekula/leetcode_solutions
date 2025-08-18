@@ -1,28 +1,17 @@
-# Last updated: 19.08.2025, 03:35:30
+# Last updated: 19.08.2025, 03:43:23
 class Solution:
-    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
-        candidates.sort()
-        ans = []
+    def search(self, nums: List[int], target: int) -> int:
+        l, r = 0, len(nums)-1
 
-        def dfs(curr, s, pos):
+        while l <= r:
+            mid = (l+r)//2
 
-            if curr == 0:
-                ans.append(s[:])
+            if nums[mid] == target:
+                return mid
             
-            for i in range(pos, len(candidates)):
-
-                candidate = candidates[i]
-                if i > pos and candidates[i-1] == candidate:
-                    continue
-                
-                if curr - candidate < 0:
-                    break
-                
-                s.append(candidate)
-
-                dfs(curr-candidate, s, i+1)
-
-                s.pop()
+            if nums[mid] > target:
+                r = mid - 1
+            else:
+                l = mid + 1
         
-        dfs(target, [], 0)
-        return ans
+        return -1
