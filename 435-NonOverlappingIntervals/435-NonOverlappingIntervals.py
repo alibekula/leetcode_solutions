@@ -1,0 +1,18 @@
+# Last updated: 19.08.2025, 03:37:22
+class Solution:
+    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
+        
+        if not intervals:
+            return 0
+        # 1 -2 2 -3 4 - 6 5 - 6  6 - 6
+        intervals.sort(key=lambda x: x[1])
+        count = 0
+        ll, rl = intervals[0][0], intervals[0][1]
+
+        for lr, rr in intervals[1:]:
+            if rl > lr:
+                count += 1
+                continue
+            ll, rl = lr, rr
+        
+        return count
