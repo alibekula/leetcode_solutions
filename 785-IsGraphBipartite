@@ -1,18 +1,46 @@
-# Last updated: 18.08.2025, 05:02:46
+# Last updated: 18.08.2025, 11:26:57
 class Solution:
-    def eraseOverlapIntervals(self, intervals: List[List[int]]) -> int:
-        
-        if not intervals:
-            return 0
-        # 1 -2 2 -3 4 - 6 5 - 6  6 - 6
-        intervals.sort(key=lambda x: x[1])
-        count = 0
-        ll, rl = intervals[0][0], intervals[0][1]
+    
+    def _add(self, a, b):
 
-        for lr, rr in intervals[1:]:
-            if rl > lr:
-                count += 1
-                continue
-            ll, rl = lr, rr
+        carry = 0
+        ans = 0
+
+        for i in range(32):
+            bit1 = (a>>i) & 1
+            bit2 = (b>>i) & 1
+
+            if bit1 == bit2:
+                # 0 - 0
+                if bit1 == 0 and bit2 == 0:
+                    bit_res = carry
+                    carry = 0
+                else:
+                    bit_res = carry
+                    carry = 1
+            else:# bit1 != bit2
+                if carry:
+                    bit_res = 0
+                    carry = 1
+                else:
+                    bit_res = 1
+                    carry = 0
+
+            ans |= (bit_res << i) 
         
-        return count
+        return ans
+
+
+    def getSum(self, a: int, b: int) -> int:
+        mask = 2**32-1
+
+        a = mask&a
+        b = mask&b
+
+        ans = self._add(a, b)
+
+        if ans >= 2 **31:
+            return -(2**32 - ans)
+        
+        return ans
+        
