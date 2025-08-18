@@ -1,25 +1,27 @@
-# Last updated: 18.08.2025, 13:10:26
+# Last updated: 18.08.2025, 14:13:59
 class Solution:
-    def combinationSum(self, candidates: List[int], target: int) -> List[List[int]]:
-        ans = []
-        candidates.sort()
+    def combinationSum2(self, candidates: List[int], target: int) -> List[List[int]]:
+        ans = set()
 
-        def dfs(curr, s, pos):
+        def inner(curr, pos, seq = None):
             if curr == 0:
-                ans.append(s[:])
-
+                ans.add(tuple(sorted(seq)))
+                return 
+            
+            if curr < 0:
+                return
+            
+            seq = [] if seq is None else seq
             
             for i in range(pos, len(candidates)):
-
-                candidate = candidates[i]
-
-                if curr - candidate < 0:
-                    break
-
-                s.append(candidate)
-                dfs(curr - candidate, s, i)
-                s.pop()
+                if i > pos and candidates[i] == candidates[i-1]:
+                    continue
+                seq.append(candidates[i])
+                inner(curr - candidates[i], i+1, seq)
+                seq.pop()
         
-        dfs(target, [],0)
+        inner(target, 0, None)
 
-        return ans
+        return [list(i) for i in ans]
+
+        
