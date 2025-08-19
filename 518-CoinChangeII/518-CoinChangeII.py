@@ -1,20 +1,29 @@
-# Last updated: 20.08.2025, 01:05:38
+# Last updated: 20.08.2025, 04:43:35
 class Solution:
-    def change(self, amount: int, coins: List[int]) -> int:
+
+    def count(self, s: str) -> tuple[int]:
+        num_zeros = 0
+        num_ones = 0
+
+        for char in s:
+            if char == '0':
+                num_zeros += 1
+            else:
+                num_ones += 1
         
-        if amount == 0:
-            return 1
+        return (num_zeros, num_ones)
+
+    def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
         
-        coins.sort()
-        dp = [0 for _ in range(amount + 1)]
-        dp[0] = 1
+        weights = [self.count(s) for s in strs]
+        k = len(strs)
 
-        for coin in coins:
-            for i in range(coin, amount + 1):
-                dp[i] += dp[i-coin]
- 
+        dp = [[0 for _ in range(n+1)] for _ in range(m+1)]
 
-        return dp[amount]
+        for zeros, ones in weights:
+            for i in range(m, zeros-1, -1):
+                for j in range(n, ones-1, -1):
+                    dp[i][j] = max(dp[i-zeros][j-ones] + 1, dp[i][j])
 
-
-                
+        return dp[m][n]
+        
