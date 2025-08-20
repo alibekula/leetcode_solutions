@@ -1,60 +1,42 @@
-# Last updated: 21.08.2025, 02:18:17
+# Last updated: 21.08.2025, 02:35:17
+from collections import defaultdict
+
 class Solution:
-    def _find(self, node):
-        if self.roots[node] == node:
-            return node
-        
-        self.roots[node] = self._find(self.roots[node])
-        return self.roots[node]
-    
-    def _union(self, node1, node2):
-        root1 = self._find(node1)
-        root2 = self._find(node2)
-
-        if root1 != root2:
-            self.roots[root2] = root1
-            return False
-        
-        return True
-    
-    def _calc_dist(self, node1, node2):
-        x1, y1 = node1
-        x2, y2 = node2
-
-        return abs(x1 - x2) + abs(y1 - y2)
-
     def minCostConnectPoints(self, points: List[List[int]]) -> int:
+
+        if not points:
+            return 0
+
         n = len(points)
-        points = [tuple(i) for i in points]
-        visited = [False for _ in range(n)]
-        k = n-1
+        points = [ tuple(i) for i in points]
 
-        self.roots = {key: value for key, value in zip(points, points)}
-
-        edges = []
+        graph = defaultdict(list)
 
         for i in range(n):
             p1 = points[i]
             for j in range(i+1, n):
                 p2 = points[j]
-                edges.append([self._calc_dist(p1, p2), p1, p2])
-        
-        edges.sort()
-        ans = 0
-
-        for edge in edges:
-            dist, p1, p2 = edge
-
-            if not self._union(p1, p2):
-                ans += dist
-                k -= 1
+                dist = abs(p1[0] - p2[0]) + abs(p1[1]-p2[1])
+                graph[p1].append([dist, p1, p2])
+                graph[p2].append([dist, p2, p1])
             
-            if k == 0:
-                return ans
-        
-        return ans
+        heap = [[0, points[0]]]
+        visited = set()
+        res = 0
 
-        
+        while len(visited) < n:
+            dist, p = heapq.heappop(heap)
 
-            
+            if p in visited:
+                continue
+
+            visited.add(p)
+            res += dist
+
+            for node in graph[p]:
+                new_dist, p1, p2 = node
+                if p2 not in visited:
+                    heapq.heappush(heap, [new_dist, p2])
+        
+        return res
 
