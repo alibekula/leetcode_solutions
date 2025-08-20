@@ -1,29 +1,54 @@
-# Last updated: 20.08.2025, 04:43:35
+# Last updated: 20.08.2025, 20:10:16
 class Solution:
-
-    def count(self, s: str) -> tuple[int]:
-        num_zeros = 0
-        num_ones = 0
-
-        for char in s:
-            if char == '0':
-                num_zeros += 1
-            else:
-                num_ones += 1
+    def _find(self, node):
+        if self.roots[node] == node:
+            return node
         
-        return (num_zeros, num_ones)
+        self.roots[node] = self._find(self.roots[node])
+        return self.roots[node]
+    
+    def _union(self, node1, node2):
+        root1 = self._find(node1)
+        root2 = self._find(node2)
 
-    def findMaxForm(self, strs: List[str], m: int, n: int) -> int:
+        if root1 != root2:
+            self.roots[root2] = root1
+            return False
+        return True
+    
+    def _is_diff(self, node1, node2):
+        root1 = self._find(node1)
+        root2 = self._find(node2)
+
+        return root1 != root2
+
+    def equationsPossible(self, equations: List[str]) -> bool:
         
-        weights = [self.count(s) for s in strs]
-        k = len(strs)
+        self.roots = {}
 
-        dp = [[0 for _ in range(n+1)] for _ in range(m+1)]
+        for s in equations:
+            node1, node2 = s[0], s[-1]
+            self.roots[node1] = node1
+            self.roots[node2] = node2
+        
+        for s in equations:
+            char1 = s[0]
+            char2 = s[-1]
+            op = s[1:3]
 
-        for zeros, ones in weights:
-            for i in range(m, zeros-1, -1):
-                for j in range(n, ones-1, -1):
-                    dp[i][j] = max(dp[i-zeros][j-ones] + 1, dp[i][j])
+            if op == '==':
+                self._union(char1, char2)
 
-        return dp[m][n]
+        for s in equations:
+            char1 = s[0]
+            char2 = s[-1]
+            op = s[1:3]
+
+            if op == '!=':
+                if not self._is_diff(char1, char2):
+                    return False
+        
+        return True
+
+        
         
