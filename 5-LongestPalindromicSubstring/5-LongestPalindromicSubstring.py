@@ -1,4 +1,4 @@
-# Last updated: 21.08.2025, 18:18:17
+# Last updated: 21.08.2025, 18:20:32
 from collections import defaultdict 
 class Solution:
     def maxCoins(self, nums: List[int]) -> int:
@@ -10,7 +10,6 @@ class Solution:
         def solve(left, right):
             if left+1 == right:
                 return 0
-            
             if (left, right) in memo:
                 return memo[(left, right)]
             
