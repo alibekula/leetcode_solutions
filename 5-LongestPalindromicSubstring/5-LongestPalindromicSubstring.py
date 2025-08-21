@@ -1,26 +1,18 @@
-# Last updated: 21.08.2025, 07:06:54
+# Last updated: 21.08.2025, 08:58:08
 class Solution:
-    def expand_from_center(self, i, j):
-
-        l, r = i, j
-
-        while (r < self.n and l >= 0) and (self.s[l] == self.s[r]):
-            l -= 1
-            r += 1
+    def findLength(self, nums1: List[int], nums2: List[int]) -> int:
         
-        return [l+1, r-1]
+        n, m = len(nums1), len(nums2)
 
-    def longestPalindrome(self, s: str) -> str:
-        self.n = len(s)
-        self.s = s
-        max_len = [0, 0]
+        dp = [[0 for _ in range(m+1)] for _ in range(n+1)]
+        max_subseq = 0
+
+        for i in range(1, n+1):
+            for j in range(1, m+1):
+                if nums1[i-1] == nums2[j-1]:
+                    dp[i][j] = dp[i-1][j-1] + 1
+                
+                max_subseq = max(dp[i][j], max_subseq)
         
-        for i in range(self.n):
-
-            odd = self.expand_from_center(i, i)
-            even = self.expand_from_center(i, i+1)
-
-            max_len = max(odd, even, max_len, key=lambda x: x[1] - x[0])
-        
-        return s[max_len[0]:max_len[1]+1]
-
+        return max_subseq
+                
