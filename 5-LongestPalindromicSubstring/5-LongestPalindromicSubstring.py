@@ -1,26 +1,22 @@
-# Last updated: 16.08.2025, 19:19:00
-import heapq
-
+# Last updated: 21.08.2025, 06:59:56
 class Solution:
-    def canPartition(self, nums: List[int]) -> bool:
-        total = sum(nums)
-        
-        if total % 2 != 0:
-            return False
-        
-        target = total//2
-        dp = {0}
+    def longestPalindrome(self, s: str) -> str:
+        n = len(s)
 
-        for num in nums:
-            items = set()
+        if n == 0:
+            return ''
 
-            for curr in dp:
-                items.add(num + curr)
+        dp = [[False for _ in range(n)] for _ in range(n)]
+        max_str = s[0]
 
-                if num + curr == target:
-                    return True
-                
-            dp.update(items)
+        for i in range(n):
+            dp[i][i] = True
 
-        return target in dp
+            for j in range(i-1, -1, -1):
+                if s[i] == s[j] and (dp[j+1][i-1] or i-j < 2):
+                    dp[j][i] = True
 
+                    if i - j + 1 > len(max_str):
+                        max_str = s[j: i+1]
+            
+        return max_str
