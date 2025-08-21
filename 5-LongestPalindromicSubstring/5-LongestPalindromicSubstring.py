@@ -1,31 +1,28 @@
-# Last updated: 21.08.2025, 10:12:19
-from collections import Counter
+# Last updated: 21.08.2025, 18:18:17
+from collections import defaultdict 
 class Solution:
-    def partition(self, s: str) -> list[[str]]:
+    def maxCoins(self, nums: List[int]) -> int:
         
-        n = len(s)
-        dp = [[False for _ in range(n)] for _ in range(n)]
+        n = len(nums)
+        nums = [1] + nums + [1]
+        memo = defaultdict(int)
 
-        for i in range(n):
-            dp[i][i] = True
-            for j in range(i-1, -1, -1):
-                if s[i] == s[j] and (i-j < 2 or dp[i-1][j+1]):
-                    dp[i][j] = True
+        def solve(left, right):
+            if left+1 == right:
+                return 0
+            
+            if (left, right) in memo:
+                return memo[(left, right)]
+            
+            ans = float('-inf')
+            for i in range(left+1, right):
+                curr = nums[left] * nums[i] * nums[right] + solve(left, i) + solve(i, right)
 
-        ans = []
-        curr = []
+                ans = max(curr, ans, 0)
+            
 
-        def dfs(i):
-            nonlocal n, s
-            if i >= n:
-                ans.append(curr[:])
-                return
+            memo[(left, right)] = ans
 
-            for j in range(i, n):
-                if dp[j][i]:
-                    curr.append(s[i:j+1])
-                    dfs(j+1)           
-                    curr.pop() 
-
-        dfs(0)
-        return ans
+            return ans
+        
+        return solve(0, len(nums)-1)
