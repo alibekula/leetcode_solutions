@@ -1,22 +1,29 @@
-# Last updated: 08.09.2025, 17:41:31
-# Definition for a binary tree node.
-# class TreeNode:
-#     def __init__(self, val=0, left=None, right=None):
-#         self.val = val
-#         self.left = left
-#         self.right = right
+# Last updated: 08.09.2025, 18:20:26
 class Solution:
-    def postorderTraversal(self, root: Optional[TreeNode]) -> List[int]:
-        
-        ans = []
 
-        def dfs(node):
-            if not node:
-                return 
-            
-            dfs(node.left)
-            dfs(node.right)
-            ans.append(node.val)
+    def sink(self, i, j, count=0):
+        if (not ((0 <= i < self.n) and (0 <= j < self.m))) or (self.grid[i][j] == 0):
+            return 0
         
-        dfs(root)
-        return ans
+        self.grid[i][j] = 0
+        count = 1
+        directions = [(1,0), (0,1), (-1,0), (0,-1)]
+
+        for dx, dy in directions:
+            count += self.sink(i + dx, j + dy, count)
+        
+        return count
+
+
+    def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
+        
+        self.n, self.m = len(grid), len(grid[0])
+        self.grid = grid
+        max_count = 0
+
+        for i in range(self.n):
+            for j in range(self.m):
+                if self.grid[i][j] == 1:
+                    max_count = max(self.sink(i, j), max_count)
+        
+        return max_count
