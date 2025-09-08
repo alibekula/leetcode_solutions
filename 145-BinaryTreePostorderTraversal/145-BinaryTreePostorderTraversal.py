@@ -1,29 +1,34 @@
-# Last updated: 08.09.2025, 18:20:26
+# Last updated: 08.09.2025, 20:19:46
 class Solution:
-
-    def sink(self, i, j, count=0):
-        if (not ((0 <= i < self.n) and (0 <= j < self.m))) or (self.grid[i][j] == 0):
-            return 0
+    def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
         
-        self.grid[i][j] = 0
-        count = 1
-        directions = [(1,0), (0,1), (-1,0), (0,-1)]
+        pacific = set()
+        atlantic = set()
+        n, m = len(heights), len(heights[0])
 
-        for dx, dy in directions:
-            count += self.sink(i + dx, j + dy, count)
+        def dfs(i, j, reachable):
+            nonlocal n, m
+            reachable.add((i, j))
+            directions = [(0,1), (1,0), (-1,0), (0,-1)]
+
+            for x, y in directions:
+                di = i + x
+                dj = j + y
+
+                if (di, dj) in reachable or not (0<=di<n and 0<=dj<m):
+                    continue
+                
+                if heights[i][j] > heights[di][dj]:
+                    continue
+
+                dfs(di, dj, reachable)
         
-        return count
-
-
-    def maxAreaOfIsland(self, grid: List[List[int]]) -> int:
+        for i in range(n):
+            dfs(i, 0, pacific)
+            dfs(i, m-1, atlantic)
         
-        self.n, self.m = len(grid), len(grid[0])
-        self.grid = grid
-        max_count = 0
-
-        for i in range(self.n):
-            for j in range(self.m):
-                if self.grid[i][j] == 1:
-                    max_count = max(self.sink(i, j), max_count)
+        for j in range(m):
+            dfs(0, j, pacific)
+            dfs(n-1, j, atlantic)
         
-        return max_count
+        return list(pacific.intersection(atlantic))
