@@ -1,4 +1,4 @@
-# Last updated: 10.09.2025, 03:34:50
+# Last updated: 10.09.2025, 04:23:09
 class Solution:
 
     def isValid(self, string):
@@ -25,7 +25,7 @@ class Solution:
         ans = []
 
         def backtrack(i, path):
-            if len(path) > 4:
+            if len(path) > 4 or (len(path) == 4 and i < n):
                 return
 
             if i >= n and len(path) == 4:
