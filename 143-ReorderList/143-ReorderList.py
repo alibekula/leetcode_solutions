@@ -1,51 +1,27 @@
-# Last updated: 09.09.2025, 05:53:14
-# Definition for singly-linked list.
-# class ListNode:
-#     def __init__(self, val=0, next=None):
-#         self.val = val
-#         self.next = next
+# Last updated: 09.09.2025, 06:34:17
 class Solution:
-
-    def reverseList(self, root):
-
-        prev = None 
-        curr = root
-
-        while curr:
-            next_node = curr.next
-            curr.next = prev
-            prev = curr
-
-            curr = next_node
+    def swimInWater(self, grid: List[List[int]]) -> int:
         
-        return prev
+        n, m = len(grid), len(grid[0])
+        heap = []
+        max_cost = grid[n-1][m-1]
+
+        heapq.heappush(heap, [grid[n-1][m-1], n-1, m-1])
+        visited = set()
+        while heap:
+            cost, i, j = heapq.heappop(heap)
+            max_cost = max(max_cost, cost)
+
+            if (i, j) == (0, 0):
+                return max_cost
+            
+            directions = [(0,1), (1,0), (-1,0), (0,-1)]
+
+            for x, y in directions:
+                xi, yj = i+x, j+y
+                if (0<=xi<n and 0<=yj<m) and (xi, yj) not in visited:
+                    visited.add((xi, yj))
+                    new_cost = max(grid[xi][yj], max_cost)
+                    heapq.heappush(heap, [new_cost, xi, yj])
 
 
-
-
-
-    def reorderList(self, head: Optional[ListNode]) -> None:
-        """
-        Do not return anything, modify head in-place instead.
-        """
-        if not head or not head.next:
-            return 
-        
-        fast, slow = head, head
-
-        while fast and fast.next:
-            fast = fast.next.next
-            slow = slow.next
-        
-        second = self.reverseList(slow.next)
-        slow.next = None
-
-        first = head
-
-        while second:
-            tmp1, tmp2 = first.next, second.next
-            first.next = second
-            second.next = tmp1
-
-            first, second = tmp1, tmp2
-        
