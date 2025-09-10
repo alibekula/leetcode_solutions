@@ -1,28 +1,37 @@
-# Last updated: 11.09.2025, 02:01:43
+# Last updated: 11.09.2025, 02:07:59
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
 #         self.val = val
 #         self.left = left
 #         self.right = right
+
+from collections import deque
 class Solution:
     def minDepth(self, root: Optional[TreeNode]) -> int:
+
+        if not root:
+            return 0
         
-        min_level = float('inf')
+        queue = deque([root])
+        level = 0
 
-        def dfs(node, level=1):
-            nonlocal min_level
-            if not node:
-                return
+        while queue:
+            width = len(queue)
+            level += 1
             
-            if not node.left and not node.right:
-                min_level = min(min_level, level)
-                return 
+            for i in range(width):
+                node = queue.popleft()
+                left = node.left
+                right = node.right
 
-            
-            dfs(node.left, level+1)
-            dfs(node.right, level+1)
-        
-        dfs(root)
+                if not left and not right:
+                    return level
 
-        return min_level if min_level != float('inf') else 0
+                if left:
+                    queue.append(left)
+                
+                if right:
+                    queue.append(right)
+
+        return 0
