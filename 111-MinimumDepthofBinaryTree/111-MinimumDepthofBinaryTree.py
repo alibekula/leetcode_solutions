@@ -1,4 +1,4 @@
-# Last updated: 11.09.2025, 02:01:26
+# Last updated: 11.09.2025, 02:01:43
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -17,6 +17,7 @@ class Solution:
             
             if not node.left and not node.right:
                 min_level = min(min_level, level)
+                return 
 
             
             dfs(node.left, level+1)
