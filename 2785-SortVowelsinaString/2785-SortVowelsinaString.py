@@ -1,30 +1,22 @@
-# Last updated: 11.09.2025, 07:03:20
+# Last updated: 11.09.2025, 07:15:55
 class Solution:
     def sortVowels(self, s: str) -> str:
+        vowels = set('aeiouAEIOU')
+        order = "AEIOUaeiou"  
+        freq = {ch: 0 for ch in order}
         
-        vowels = set(sorted('aeiouAEIOU'))
-        vowel_map = {}
-        lst_s = list(s)
-
-        for char in s:
-            if char in vowels:
-                vowel_map[char] = vowel_map.get(char, 0) + 1
+        lst = list(s)
         
-        for i in range(len(lst_s)):
-            chats_to_del = []
-            if lst_s[i] in vowels:
-                for new_char, count in sorted(vowel_map.items()):
-                    if count > 0:
-                        vowel_map[new_char] -= 1
-                        lst_s[i] = new_char
-                        break
-                    else:
-                        chats_to_del.append(new_char)
-                    
-            for del_char in chats_to_del:
-                del vowel_map[del_char]
+        for ch in s:
+            if ch in vowels:
+                freq[ch] += 1
         
-        return ''.join(lst_s)
-
-
-
+        idx = 0  
+        for i, ch in enumerate(lst):
+            if ch in vowels:
+                while idx < len(order) and freq[order[idx]] == 0:
+                    idx += 1
+                lst[i] = order[idx]
+                freq[order[idx]] -= 1
+        
+        return ''.join(lst)
