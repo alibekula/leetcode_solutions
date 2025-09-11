@@ -1,4 +1,4 @@
-# Last updated: 11.09.2025, 07:15:55
+# Last updated: 11.09.2025, 07:18:00
 class Solution:
     def sortVowels(self, s: str) -> str:
         vowels = set('aeiouAEIOU')
@@ -14,7 +14,7 @@ class Solution:
         idx = 0  
         for i, ch in enumerate(lst):
             if ch in vowels:
-                while idx < len(order) and freq[order[idx]] == 0:
+                while freq[order[idx]] == 0:
                     idx += 1
                 lst[i] = order[idx]
                 freq[order[idx]] -= 1
