@@ -1,4 +1,4 @@
-# Last updated: 12.09.2025, 07:29:51
+# Last updated: 12.09.2025, 08:15:00
 # Definition for a binary tree node.
 # class TreeNode:
 #     def __init__(self, val=0, left=None, right=None):
@@ -8,19 +8,20 @@
 class Solution:
     def isValidBST(self, root: Optional[TreeNode]) -> bool:
         
-        def valid(node, minimum=float('-inf'), maximum=float('inf')):
+        def valid(node):
             if not node:
-                return True
+                return True, float('inf'), float('-inf')
 
-            if not (minimum < node.val < maximum):
-                return False
-            
-            if not valid(node.left, minimum=minimum, maximum = node.val):
-                return False
-            
-            if not valid(node.right, minimum=node.val, maximum=maximum):
-                return False
-            
-            return True
+            left_bst, min_left, max_left = valid(node.left)
+            right_bst, min_right, max_right = valid(node.right)
 
-        return valid(root) 
+            if not left_bst or not right_bst:
+                return False, 0, 0
+            
+            if not (max_left < node.val < min_right):
+                return False, 0, 0 
+            
+            return True, min(node.val, min_left), max(node.val, max_right)
+
+        is_bst, _, _ = valid(root)
+        return is_bst  
