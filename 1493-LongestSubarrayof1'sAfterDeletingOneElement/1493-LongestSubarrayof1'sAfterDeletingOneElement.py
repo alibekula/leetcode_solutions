@@ -1,16 +1,26 @@
-# Last updated: 23.09.2025, 17:18:09
+# Last updated: 25.09.2025, 21:57:46
 class Solution:
-    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
-        l, r = 0, len(arr)-k
+    def longestSubarray(self, nums: List[int]) -> int:
+        longest = 0
 
-        while l < r:
-            mid = (l+r)//2
+        l, r = 0, 0 
+        k = 1
 
-            if x - arr[mid] > arr[mid+k] - x:
-                l = mid + 1
-            else:
-                r = mid
+        while r < len(nums):
+            
+            if nums[r] == 0:
+                k -= 1
 
-        return arr[l:l+k] 
+            while k < 0:
+                if nums[l] == 0:
+                    k += 1
+                
+                l += 1
+            
+            longest=max(longest, r-l+k)
+            r += 1
+        
+        return longest if longest != len(nums) else longest -1
 
-# - - 
+
+
