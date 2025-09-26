@@ -1,25 +1,30 @@
-# Last updated: 27.09.2025, 05:08:58
+# Last updated: 27.09.2025, 05:23:55
 class Solution:
-    def lengthOfLongestSubstring(self, s: str) -> int:
-        if not s:
+    def compress(self, chars: List[str]) -> int:
+
+        if not chars:
             return 0
+
+        chars.append('<eol>')
+        n = len(chars)
+        count = 1
+        p = 0
+        prev = chars[0]
+
+        for i in range(1, n):
+            curr = chars[i]
+
+            if prev == curr:
+                count += 1
+            else:
+                chars[p] = prev
+                p += 1
+                if count != 1:
+                    for num in str(count):
+                        chars[p] = num
+                        p += 1
+                
+                prev = curr
+                count = 1
         
-        longest = 0
-        n = len(s)
-        l, r = 0, 0
-        sett = set()
-
-        while r < n:
-            while r < n and s[r] not in sett:
-                sett.add(s[r])
-                longest = max(longest, len(sett))
-                r += 1
-            
-            while r < n and s[r] in sett:
-                sett.discard(s[l])
-                l += 1
-
-        return longest
-
-
-        
+        return p
