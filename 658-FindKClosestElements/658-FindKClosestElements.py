@@ -1,16 +1,17 @@
-# Last updated: 13.08.2025, 16:57:06
+# Last updated: 27.09.2025, 03:44:33
 class Solution:
-    def findClosestElements(self, arr: List[int], k: int, x: int) -> List[int]:
-        l, r = 0, len(arr)-k
+    def validPalindrome(self, s: str, k = 1, l=None, r = None) -> bool:
+        
+        if l is None or r is None:
+            l, r = 0, len(s)-1
 
-        while l < r:
-            mid = (l+r)//2
-
-            if x - arr[mid] > arr[mid+k] - x:
-                l = mid + 1
+        while l <= r:
+            if s[l] != s[r]:
+                if k >= 1:
+                    return self.validPalindrome(s, 0, l+1, r) or self.validPalindrome(s, 0, l, r-1)
+                return False
             else:
-                r = mid
-
-        return arr[l:l+k] 
-
-# - - 
+                l += 1
+                r -= 1
+        
+        return True
