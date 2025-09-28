@@ -1,26 +1,29 @@
-# Last updated: 28.09.2025, 10:23:20
+# Last updated: 28.09.2025, 10:31:59
 class Solution:
-    def numIslands(self, grid: List[List[str]]) -> int:
+    def intervalIntersection(self, f: List[List[int]], s: List[List[int]]) -> List[List[int]]:
         
-        def search(i, j):
-            nonlocal n, m
-            if not (0 <= i < n and 0 <= j < m) or grid[i][j] == '0':
-                return 
+        n, m = len(f), len(s)
+
+        if n == 0 or m == 0:
+            return []
+        
+        l, r = 0, 0
+        ans = []
+
+        while l < n and r < m:
             
-            grid[i][j] = '0'
+            start1, end1 = f[l]
+            start2, end2 = s[r]
 
-            directions = [(0,1), (1,0), (-1,0), (0,-1)]
+            left = max(start1, start2)
+            right = min(end1, end2)
 
-            for x, y in directions:
-                search(i+x, j +y)
+            if left <= right:
+                ans.append([left, right])
+            
+            if end1 < end2:
+                l += 1
+            else:
+                r += 1
         
-        n, m = len(grid), len(grid[0])
-        count = 0
-
-        for i in range(n):
-            for j in range(m):
-                if grid[i][j] == '1':
-                    count += 1
-                    search(i, j)
-        
-        return count 
+        return ans
