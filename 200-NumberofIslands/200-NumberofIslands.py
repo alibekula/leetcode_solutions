@@ -1,29 +1,44 @@
-# Last updated: 28.09.2025, 10:31:59
+# Last updated: 28.09.2025, 11:36:25
+# Definition for a binary tree node.
+# class TreeNode:
+#     def __init__(self, x):
+#         self.val = x
+#         self.left = None
+#         self.right = None
+
 class Solution:
-    def intervalIntersection(self, f: List[List[int]], s: List[List[int]]) -> List[List[int]]:
+    def lowestCommonAncestor(self, root: 'TreeNode', p: 'TreeNode', q: 'TreeNode') -> 'TreeNode':
         
-        n, m = len(f), len(s)
+        p_found = False
+        q_found = False
 
-        if n == 0 or m == 0:
-            return []
-        
-        l, r = 0, 0
-        ans = []
+        p_path = []
+        q_path = []
 
-        while l < n and r < m:
+
+        def dfs(node, path):
+            nonlocal p_found, q_found, p, q, p_path, q_path
+            if not node or (p_found and q_found):
+                return
+            path.append(node)
+
+            if node == p:
+                p_path = path[:]
+                p_found = True
             
-            start1, end1 = f[l]
-            start2, end2 = s[r]
-
-            left = max(start1, start2)
-            right = min(end1, end2)
-
-            if left <= right:
-                ans.append([left, right])
+            if node == q:
+                q_path = path[:]
+                q_found = True
             
-            if end1 < end2:
-                l += 1
-            else:
-                r += 1
+            dfs(node.left, path)
+            dfs(node.right, path)
+            path.pop()
         
-        return ans
+
+        dfs(root, [])
+        lca = None
+        for node1, node2 in zip(p_path, q_path):
+            if node1 is node2:
+                lca = node1
+        
+        return lca
