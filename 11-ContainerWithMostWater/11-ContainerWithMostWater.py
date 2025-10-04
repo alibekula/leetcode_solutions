@@ -1,15 +1,22 @@
-# Last updated: 13.08.2025, 17:01:26
+# Last updated: 04.10.2025, 11:17:20
 class Solution:
     def maxArea(self, height: List[int]) -> int:
-        l, r = 0, len(height) - 1
-        max_count = 0
+        
+        n = len(height)
+        l, r = 0, n-1
+        total = 0
 
-        while l <= r:
-            if height[l] <= height[r]:
-                max_count = max(max_count, height[l] * (r-l))
+        while l < r:
+            
+            left_val = height[l]
+            right_val = height[r]
+            total = max(total, min(left_val, right_val) * (r - l))
+
+            if left_val <= right_val:
                 l += 1
             else:
-                max_count = max(max_count, height[r] * (r-l))
                 r -= 1
+        
+        return total
 
-        return max_count
+
