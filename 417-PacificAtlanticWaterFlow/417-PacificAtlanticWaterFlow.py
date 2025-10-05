@@ -1,30 +1,40 @@
-# Last updated: 13.09.2025, 15:14:17
+# Last updated: 05.10.2025, 10:52:19
 from collections import deque
-
 class Solution:
     def pacificAtlantic(self, heights: List[List[int]]) -> List[List[int]]:
-        if not heights: 
+        if not heights:
             return []
         
-        n, m = len(heights), len(heights[0])
+        h = heights
+        n, m = len(h), len(h[0])
+
+        pac, atl = deque(), deque()
+
+        for j in range(m):
+            pac.append((0, j))
+            atl.append((n - 1, j))
         
-        def bfs(starts):
-            visited = set(starts)
-            q = deque(starts)
-            while q:
-                i, j = q.popleft()
-                for di, dj in [(1,0), (-1,0), (0,1), (0,-1)]:
-                    ni, nj = i + di, j + dj
-                    if 0 <= ni < n and 0 <= nj < m and (ni, nj) not in visited:
-                        if heights[ni][nj] >= heights[i][j]:
-                            visited.add((ni, nj))
-                            q.append((ni, nj))
-            return visited
-        
-        pacific_starts = [(0, j) for j in range(m)] + [(i, 0) for i in range(n)]
-        atlantic_starts = [(n-1, j) for j in range(m)] + [(i, m-1) for i in range(n)]
-        
-        pacific = bfs(pacific_starts)
-        atlantic = bfs(atlantic_starts)
-        
-        return list(map(list, pacific & atlantic))
+        for i in range(n):
+            pac.append((i, 0))
+            atl.append((i, m - 1))
+
+        dct = {'pacific': set(), 'atlantic' : set()}
+        for ocean, name in [(pac, 'pacific'), (atl, 'atlantic')]:
+            while ocean:
+                x, y = ocean.popleft()
+                d = [(0,1), (1,0), (-1,0), (0,-1)]
+
+                if (x, y) in dct[name]:
+                    continue
+                dct[name].add((x, y))
+
+                for dx, dy in d:
+                    if 0 <= dx + x < n and 0 <= dy + y < m and h[x][y] <= h[dx+x][dy+ y]:
+                        ocean.append((dx+x, dy+y))
+
+            
+        return list(dct['pacific'].intersection(dct['atlantic']))
+                    
+
+
+
