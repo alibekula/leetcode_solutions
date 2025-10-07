@@ -1,59 +1,44 @@
-# Last updated: 07.10.2025, 18:42:42
+# Last updated: 07.10.2025, 18:56:26
 from collections import deque
 import heapq
 class Solution:
     def avoidFlood(self, rains: List[int]) -> List[int]:
         
-        ans = []
-        zeros = []
-        count = {}
+        n = len(rains)
+        ans = [-1] * n
+        future = dict()
+        heap = []
 
         for day, lake in enumerate(rains):
+            if lake not in future:
+                future[lake] = deque([])
+            
+            future[lake].append(day)
 
-            if lake not in count:
-                if lake == 0:
-                    zeros.append(day)
-                    ans.append(-1)
-                    continue
-                count[lake] = day
-            else:
-                if not zeros:
+        seen = set()
+        for day, lake in enumerate(rains):
+            
+            if lake != 0:
+                if lake in seen:
                     return []
+                
+                seen.add(lake)
+                future[lake].popleft()
+
+                if not future[lake]:
+                    del future[lake]
                 else:
-                    first_day = count[lake]
-                    last_day = day
-                    count[lake] = last_day
-                    pos = None
-
-                    for idx,zero_day in enumerate(zeros):
-                        if zero_day > first_day:
-                            pos = zero_day
-                            zeros.pop(idx)
-                            break
-
-                    if pos is None:
-                        return []
-
-                    ans[pos] = lake
-
-
-            ans.append(-1)
-        
-        for i in range(1, 10**9+1):
-            if i not in count:
-                new_lake = i
-                break
-        heap = []
-        for lake, day in count.items():
-            heapq.heappush(heap, [day, lake])
-        
-        while zeros and heap and zeros[0] > heap[0][0]:
-            pos = zeros.pop()
-            _, lake = heapq.heappop(heap)
-            ans[pos] = lake
-        
-        while zeros:
-            pos = zeros.pop()
-            ans[pos] = new_lake
+                    heapq.heappush(heap, [future[lake][0], lake])
+                ans[day] = -1
+            
+            else:
+                if heap:
+                    _, lake = heappop(heap)
+                    ans[day] = lake
+                    seen.remove(lake)
+                else:
+                    ans[day] = 1
         
         return ans
+
+
