@@ -1,10 +1,10 @@
-# Last updated: 08.10.2025, 19:20:57
+# Last updated: 08.10.2025, 19:23:14
 class Solution:
     def zeroFilledSubarray(self, nums: List[int]) -> int:
         
-        zeros = []
         n = len(nums)
         i = 0
+        total = 0
 
         while i < n:
             num = nums[i]
@@ -15,12 +15,7 @@ class Solution:
             else:
                 count = 1
             i += 1
-            zeros.append(count)
-        
-        total = 0
-
-        for c in zeros:
-            if c != 0:
-                total += c
+            total += count
         
         return total
+            
