@@ -1,22 +1,25 @@
-# Last updated: 13.08.2025, 17:01:12
+# Last updated: 10.10.2025, 22:50:11
 class Solution:
     def generateParenthesis(self, n: int) -> List[str]:
+        
+        def dfs(l, r, path):
+            nonlocal n
+
+            if len(path) >= 2*n:
+                ans.append(''.join(path))
+                return 
+            
+            if l < n:
+                path.append('(')
+                dfs(l+1, r, path)
+                path.pop()
+            
+            if r < l:
+                path.append(')')
+                dfs(l, r+1, path)
+                path.pop()
+        
+        #  ( ( ( )))
         ans = []
-
-        def dfs(s='', left=0, right=0):
-
-            if len(s) == 2 * n:
-                ans.append(s)
-                return
-            
-            if left < n:
-                dfs(s=s+'(', left = left+1, right=right)
-            
-            if right < left:
-                dfs(s=s+')', left=left, right=right+1)
-            
-            return
-        
-        dfs()
+        dfs(0, 0, [])
         return ans
-        
