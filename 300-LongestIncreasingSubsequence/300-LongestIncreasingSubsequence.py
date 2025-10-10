@@ -1,32 +1,10 @@
-# Last updated: 13.08.2025, 16:57:56
-class Solution:
+# Last updated: 11.10.2025, 00:34:51
+class Solution:  # 2516 ms, faster than 64.96%
     def lengthOfLIS(self, nums: List[int]) -> int:
-
-        def bin_search(array, target):
-            l, r = 0, len(array)-1
-
-            while l <= r:
-                mid = (l+r)//2
-
-                if array[mid] == target:
-                    return mid
-                
-                if array[mid] > target:
-                    r = mid - 1
-                else:
-                    l = mid + 1
-            
-            return l
-        
-        ans = []
-
-        for num in nums:
-            if not ans or ans[-1] < num:
-                ans.append(num)
-            else:
-                idx = bin_search(ans, num)
-                ans[idx] = num
-        
-        return len(ans)
-                
-
+        n = len(nums)
+        dp = [1] * n
+        for i in range(n):
+            for j in range(i):
+                if nums[i] > nums[j] and dp[i] < dp[j] + 1:
+                    dp[i] = dp[j] + 1
+        return max(dp)
