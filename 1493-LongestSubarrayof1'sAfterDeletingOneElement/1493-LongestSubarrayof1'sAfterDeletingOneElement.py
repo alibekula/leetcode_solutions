@@ -1,26 +1,25 @@
-# Last updated: 25.09.2025, 21:57:46
+# Last updated: 10.10.2025, 22:20:05
 class Solution:
     def longestSubarray(self, nums: List[int]) -> int:
-        longest = 0
-
-        l, r = 0, 0 
-        k = 1
-
-        while r < len(nums):
-            
-            if nums[r] == 0:
-                k -= 1
-
-            while k < 0:
-                if nums[l] == 0:
-                    k += 1
-                
-                l += 1
-            
-            longest=max(longest, r-l+k)
-            r += 1
         
-        return longest if longest != len(nums) else longest -1
+        n = len(nums)
+        l, r = 0, 0
+        zero = False
+        length = 0
+        # 1 0 1 1 1 0 0 1
+        while r < n:
 
+            while r < n and (nums[r] != 0 or not zero):
+                if nums[r] == 0:
+                    zero = True
+                length = max(length, r-l)
+                r += 1
 
+            
+            while l < r and zero:
+                if nums[l] == 0:
+                    zero = False
+                l += 1
+
+        return length
 
