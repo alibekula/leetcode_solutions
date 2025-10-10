@@ -1,26 +1,25 @@
-# Last updated: 13.08.2025, 16:58:04
+# Last updated: 11.10.2025, 00:55:27
 class Solution:
     def numSquares(self, n: int) -> int:
-
-        if int(n**0.5)**2 == n:
+        
+        if int(n**0.5) == n**0.5:
             return 1
-
-        for a in range(int(n ** 0.5)+1):
-            b = n - a ** 2
-
-            if int(b**0.5)**2 + a ** 2 == n:
+        
+        tmp = n
+        for i in range(1, int(n**0.5)+1):
+            a = i**2
+            b = tmp - a
+            if int(b**0.5) == b**0.5:
                 return 2
         
-        # n = 4^m * (8k - 7)
+        # a + b + c + d = n
+        # 0 1 2 3 
+        # i * 
 
-        tmp = n
+        while n % 4 == 0:
+            n //= 4
 
-        while tmp % 4 == 0:
-            tmp //= 4
-        
-        if tmp%8 == 7:
+        if n % 8 == 7:
             return 4
-        
-        return 3
 
-        
+        return 3
