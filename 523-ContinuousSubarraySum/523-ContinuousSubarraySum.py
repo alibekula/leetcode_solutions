@@ -1,4 +1,4 @@
-# Last updated: 13.08.2025, 16:57:21
+# Last updated: 11.10.2025, 13:34:03
 class Solution:
     def checkSubarraySum(self, nums: List[int], k: int) -> bool:
 
