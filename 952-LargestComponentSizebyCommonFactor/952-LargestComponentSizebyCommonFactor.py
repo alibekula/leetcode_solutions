@@ -1,89 +1,52 @@
-# Last updated: 13.10.2025, 19:59:09
-from collections import defaultdict
-class Solution:
-    def GCD(self, a, b):
-        while b > 0:
-            a, b = b, a % b
-        
-        return a
+# Last updated: 13.10.2025, 20:08:10
+class UnionFind:
     
-    def find(self, node):
-        if self.roots[node] == node:
-            return node
-        
-        self.roots[node] = self.find(self.roots[node])
-        return self.roots[node]
-    
-    def union(self, node1, node2):
-        
-        root1 = self.find(node1)
-        root2 = self.find(node2)
+    def __init__(self, n: int):
+        self.root = list(range(n))
+        self.rank = [1 for _ in range(n)]
 
-        if root1 == root2:
-            return False
-        
-        if self.length[root1] >= self.length[root2]:
-            self.roots[root2] = root1
-            self.length[root1] += self.length[root2]
+    def find(self, x: int) -> int:
+        if self.root[x] != x: self.root[x] = self.find(self.root[x])
+        return self.root[x]
+
+    def union(self, x: int, y: int) -> None:
+        rootx, rooty = self.find(x), self.find(y)
+        if rootx == rooty: return
+        if self.rank[rootx] > self.rank[rooty]: self.root[rooty] = rootx
+        elif self.rank[rootx] < self.rank[rooty]: self.root[rootx] = rooty
         else:
-            self.roots[root1] = root2
-            self.length[root2] += self.length[root1]
+            self.root[rooty] = rootx
+            self.rank[rootx] += 1
 
-        return True
-    
-    def getPrimeFactors(self, num):
+    def is_connected(self, x: int, y: int) -> bool:
+        return self.find(x) == self.find(y)
 
-        # 10 
-        # lp = 2 3 5
-        # 4 6 8 9 10 12 15 25
-        lp = []
-        nums = [0] * (num + 1)
 
-        for i in range(2, num+1):
-            if nums[i] == 0:
-                lp.append(i)
-
-            for prime in lp:
-                insert = prime * i
-                if insert <= num:
-                    nums[insert] = insert
-        
-        return lp
-
+class Solution:
     def largestComponentSize(self, nums: List[int]) -> int:
-        max_num = max(nums)
-
-        self.roots = list(range(max_num + 1))
-        self.length = [1] * (max_num + 1)
-        
-        num_set = set(nums) 
-
-        for num in nums:
-
-            d = 2
-            temp = num
-            while d * d <= temp:
-                if temp % d == 0:
-                    self.union(num, d) 
-                    while temp % d == 0:
-                        temp //= d
-                d += 1
-
-            if temp > 1:
-                self.union(num, temp)
-
-        component_counts = {}
-        max_size = 0
-        for num in nums:
-            root = self.find(num)
-            component_counts[root] = component_counts.get(root, 0) + 1
-            max_size = max(max_size, component_counts[root])
+        def get_prime_factors(n: int) -> List[int]:
+            s = set()
+            while n % 2 == 0:
+                s.add(2)
+                n //= 2
             
-        return max_size if nums else 0
-
-
-
+            for i in range(3, int(math.sqrt(n)) + 1, 2):
+                while n % i == 0:
+                    s.add(i)
+                    n //= i
             
+            if n > 2: s.add(n)
+            return list(s)
 
-        
-        
+        uf = UnionFind(len(nums))
+        prime = collections.defaultdict(int)
+        for i, num in enumerate(nums):
+            primes = get_prime_factors(num)
+            for p in primes:
+                if p in prime: uf.union(prime[p], i)
+                prime[p] = i
+
+        c = collections.Counter()
+        for i in range(len(nums)): c[uf.find(i)] += 1
+
+        return max(c.values())
