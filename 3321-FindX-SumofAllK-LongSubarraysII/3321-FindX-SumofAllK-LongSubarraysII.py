@@ -1,62 +1,78 @@
-# Last updated: 06.11.2025, 15:23:04
-class Helper:
-    def __init__(self, x):
-        self.x = x
-        self.result = 0
-        self.large = SortedList()
-        self.small = SortedList()
-        self.occ = defaultdict(int)
-
-    def insert(self, num):
-        if self.occ[num] > 0:
-            self.internal_remove((self.occ[num], num))
-        self.occ[num] += 1
-        self.internal_insert((self.occ[num], num))
-
-    def remove(self, num):
-        self.internal_remove((self.occ[num], num))
-        self.occ[num] -= 1
-        if self.occ[num] > 0:
-            self.internal_insert((self.occ[num], num))
-
-    def get(self):
-        return self.result
-
-    def internal_insert(self, p):
-        if len(self.large) < self.x or p > self.large[0]:
-            self.result += p[0] * p[1]
-            self.large.add(p)
-            if len(self.large) > self.x:
-                to_remove = self.large[0]
-                self.result -= to_remove[0] * to_remove[1]
-                self.large.remove(to_remove)
-                self.small.add(to_remove)
-        else:
-            self.small.add(p)
-
-    def internal_remove(self, p):
-        if p >= self.large[0]:
-            self.result -= p[0] * p[1]
-            self.large.remove(p)
-            if self.small:
-                to_add = self.small[-1]
-                self.result += to_add[0] * to_add[1]
-                self.small.remove(to_add)
-                self.large.add(to_add)
-        else:
-            self.small.remove(p)
-
+# Last updated: 06.11.2025, 15:25:43
+from sortedcontainers import SortedList
+from collections import defaultdict
 
 class Solution:
     def findXSum(self, nums, k, x):
-        helper = Helper(x)
+        n = len(nums)
+        freq = defaultdict(int)
         ans = []
 
-        for i in range(len(nums)):
-            helper.insert(nums[i])
-            if i >= k:
-                helper.remove(nums[i - k])
-            if i >= k - 1:
-                ans.append(helper.get())
+        # Step 1: Initialize structures
+        def key(val):
+            return (freq[val], val)
 
+        topX = SortedList(key=key)
+        rest = SortedList(key=key)
+        sumTop = 0
+
+        # Step 2: Ordering / comparator defined via key above
+
+        def rebalance():
+            nonlocal sumTop
+            # Step 4
+            while len(topX) < min(x, len(freq)) and rest:
+                best = rest.pop(-1)
+                topX.add(best)
+                sumTop += freq[best] * best
+            while len(topX) > x:
+                worst = topX.pop(0)
+                sumTop -= freq[worst] * worst
+                rest.add(worst)
+            while topX and rest:
+                worstTop = topX[0]
+                bestRest = rest[-1]
+                if (freq[bestRest] > freq[worstTop] or
+                   (freq[bestRest] == freq[worstTop] and bestRest > worstTop)):
+                    topX.remove(worstTop)
+                    rest.remove(bestRest)
+                    topX.add(bestRest)
+                    rest.add(worstTop)
+                    sumTop += freq[bestRest] * bestRest - freq[worstTop] * worstTop
+                else:
+                    break
+
+        # Step 3, 5, 6 and Step 7: Main sliding-window loop
+        for i, v in enumerate(nums):
+            # Remove-before-update for incoming
+            if freq[v] > 0:
+                if v in topX:
+                    topX.remove(v)
+                    sumTop -= freq[v] * v
+                else:
+                    rest.remove(v)
+            # Update freq and insert
+            freq[v] += 1
+            rest.add(v)
+            rebalance()
+
+            if i >= k:
+                u = nums[i - k]
+                # Remove outgoing
+                if u in topX:
+                    topX.remove(u)
+                    sumTop -= freq[u] * u
+                else:
+                    rest.remove(u)
+                if freq[u] == 1:
+                    del freq[u]
+                else:
+                    freq[u] -= 1
+                    rest.add(u)
+                rebalance()
+
+            if i >= k - 1:
+                ans.append(sumTop)
+
+        # Step 9: Return result
         return ans
