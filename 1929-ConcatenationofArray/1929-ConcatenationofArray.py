@@ -1,9 +1,15 @@
-# Last updated: 22.11.2025, 20:32:30
+# Last updated: 22.11.2025, 20:42:29
 class Solution:
-    def getConcatenation(self, nums: List[int]) -> List[int]:
-        n = len(nums)
+    def shuffle(self, nums: List[int], n: int) -> List[int]:
+        ans = []
+        l, r = 0, n
 
-        for i in range(n):
-            nums.append(nums[i])
+        while r < 2 * n:
+
+            ans.append(nums[l])
+            ans.append(nums[r])
+            l += 1
+            r += 1
         
-        return nums
+        return ans
+
