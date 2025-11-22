@@ -1,23 +1,26 @@
-# Last updated: 22.11.2025, 23:36:51
+# Last updated: 22.11.2025, 23:36:58
 class Solution:
-    def evalRPN(self, tokens: List[str]) -> int:
+    def exclusiveTime(self, n: int, logs: List[str]) -> List[int]:
         
-        ops = {
-            '+': lambda a, b: a + b,
-            '-': lambda a, b: a - b,
-            '*': lambda a, b: a * b,
-            '/': lambda a, b: int(a / b)
-        }
-
+        inside = 0
         stack = []
+        dct = {str(key): 0 for key in range(n)}
 
-        for t in tokens:
-            if t in ops:
-                b = stack.pop()
-                a = stack.pop()
-                res = ops[t](a, b)
-                stack.append(res)
+        for log in logs:
+            idx0, op, ts = log.split(':')
+            ts = int(ts)
+
+            if op == 'end':
+
+                idx1, start = stack.pop()
+                dct[idx0] += ts - start + 1
+
+                if stack:
+                    idx2 = stack[-1][0]
+                    dct[idx2] -= ts-start +1 
             else:
-                stack.append(int(t))
+                stack.append([idx0, ts])
         
-        return stack.pop()
+        return list(dct.values())
+
+
