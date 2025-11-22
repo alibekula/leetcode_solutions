@@ -1,19 +1,23 @@
-# Last updated: 22.11.2025, 21:26:15
+# Last updated: 22.11.2025, 21:36:35
 class Solution:
-    def buildArray(self, target: List[int], n: int) -> List[str]:
+    def evalRPN(self, tokens: List[str]) -> int:
         
-        p = 0
-        ans = []
+        ops = {
+            '+': lambda a, b: a + b,
+            '-': lambda a, b: a - b,
+            '*': lambda a, b: a * b,
+            '/': lambda a, b: int(a / b)
+        }
 
-        for i in range(1, n + 1):
-            if i == target[p]:
-                p += 1
-                ans.append('Push')
+        stack = []
 
-                if p == len(target):
-                    break
+        for t in tokens:
+            if t in ops:
+                b = stack.pop()
+                a = stack.pop()
+                res = ops[t](a, b)
+                stack.append(res)
             else:
-                ans.append('Push')
-                ans.append('Pop')
+                stack.append(int(t))
         
-        return ans
+        return stack.pop()
