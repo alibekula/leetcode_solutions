@@ -1,21 +1,16 @@
-# Last updated: 22.11.2025, 21:04:05
+# Last updated: 22.11.2025, 21:07:36
 class Solution:
-    def smallerNumbersThanCurrent(self, nums: List[int]) -> List[int]:
+    def findDisappearedNumbers(self, nums: List[int]) -> List[int]:
         
-        arr = sorted(nums)
-        hashmap = {}
-
-        rank = 0
-        n = len(nums)
-
-        for i in range(n):
-            if arr[i] not in hashmap:
-                hashmap[arr[i]] = rank
-            rank += 1
+        dct = {key: 0 for key in range(1, len(nums)+1)}
 
         ans = []
 
         for num in nums:
-            ans.append(hashmap[num])
-        
+            dct[num] += 1
+
+        for key, value in dct.items():
+            if value == 0:
+                ans.append(key)
+
         return ans
