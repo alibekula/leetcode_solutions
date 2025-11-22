@@ -1,26 +1,19 @@
-# Last updated: 22.11.2025, 23:35:04
+# Last updated: 22.11.2025, 23:36:41
 class Solution:
-    def exclusiveTime(self, n: int, logs: List[str]) -> List[int]:
+    def buildArray(self, target: List[int], n: int) -> List[str]:
         
-        inside = 0
-        stack = []
-        dct = {str(key): 0 for key in range(n)}
+        p = 0
+        ans = []
 
-        for log in logs:
-            idx0, op, ts = log.split(':')
-            ts = int(ts)
+        for i in range(1, n + 1):
+            if i == target[p]:
+                p += 1
+                ans.append('Push')
 
-            if op == 'end':
-
-                idx1, start = stack.pop()
-                dct[idx0] += ts - start + 1
-
-                if stack:
-                    idx2 = stack[-1][0]
-                    dct[idx2] -= ts-start +1 
+                if p == len(target):
+                    break
             else:
-                stack.append([idx0, ts])
+                ans.append('Push')
+                ans.append('Pop')
         
-        return list(dct.values())
-
-
+        return ans
