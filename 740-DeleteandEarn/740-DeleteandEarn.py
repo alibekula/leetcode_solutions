@@ -1,4 +1,4 @@
-# Last updated: 16.12.2025, 00:19:14
+# Last updated: 16.12.2025, 00:20:31
 1from collections import Counter
 2from typing import List
 3
@@ -39,25 +39,15 @@
 38            current_points = []
 39            
 40            for num_val in range(start, end + 1):
-41                if num_val in counter:
-42                    current_points.append(num_val * counter[num_val])
-43                else:
-44                    current_points.append(0)
-45
-46            if not current_points:
-47                continue
-48                
-49            if len(current_points) == 1:
-50                total += current_points[0]
-51                continue
-52                
-53            dp = [0] * len(current_points)
-54            dp[0] = current_points[0]
-55            dp[1] = max(current_points[0], current_points[1])
-56            
-57            for i in range(2, len(current_points)):
-58                dp[i] = max(dp[i - 1], dp[i - 2] + current_points[i])
-59            
-60            total += dp[-1]
-61        
-62        return total
+41                current_points.append(num_val * counter[num_val])
+42                
+43            dp = [0] * len(current_points)
+44            dp[0] = current_points[0]
+45            dp[1] = max(current_points[0], current_points[1])
+46            
+47            for i in range(2, len(current_points)):
+48                dp[i] = max(dp[i - 1], dp[i - 2] + current_points[i])
+49            
+50            total += dp[-1]
+51        
+52        return total
