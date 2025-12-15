@@ -1,4 +1,4 @@
-# Last updated: 16.12.2025, 01:06:19
+# Last updated: 16.12.2025, 01:11:45
 1
 2class Solution:
 3    def deleteAndEarn(self, nums: List[int]) -> int:
@@ -9,7 +9,7 @@
 8        
 9        deleted = []
 10
-11        for key in list(counter.keys()):
+11        for key in counter.keys():
 12            if key - 1 not in counter and key + 1 not in counter:
 13                total += counter[key] * key
 14                deleted.append(key)
