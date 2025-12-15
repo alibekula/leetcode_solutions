@@ -1,0 +1,63 @@
+# Last updated: 16.12.2025, 00:19:14
+1from collections import Counter
+2from typing import List
+3
+4class Solution:
+5    def deleteAndEarn(self, nums: List[int]) -> int:
+6        counter = {}
+7        total = 0
+8        for num in nums:
+9            counter[num] = counter.get(num, 0) + 1
+10        
+11        deleted = []
+12
+13        for key in list(counter.keys()):
+14            if key - 1 not in counter and key + 1 not in counter:
+15                total += counter[key] * key
+16                deleted.append(key)
+17        
+18        for key in deleted:
+19            if key in counter:
+20                del counter[key]
+21
+22        ranges = []
+23        
+24        sorted_keys = sorted(counter.keys())
+25
+26        for start in sorted_keys:
+27            if start not in counter:
+28                continue
+29
+30            if start - 1 not in counter:
+31                end = start
+32                while end + 1 in counter:
+33                    end += 1
+34                ranges.append((start, end))
+35
+36        for start, end in ranges:
+37            
+38            current_points = []
+39            
+40            for num_val in range(start, end + 1):
+41                if num_val in counter:
+42                    current_points.append(num_val * counter[num_val])
+43                else:
+44                    current_points.append(0)
+45
+46            if not current_points:
+47                continue
+48                
+49            if len(current_points) == 1:
+50                total += current_points[0]
+51                continue
+52                
+53            dp = [0] * len(current_points)
+54            dp[0] = current_points[0]
+55            dp[1] = max(current_points[0], current_points[1])
+56            
+57            for i in range(2, len(current_points)):
+58                dp[i] = max(dp[i - 1], dp[i - 2] + current_points[i])
+59            
+60            total += dp[-1]
+61        
+62        return total
