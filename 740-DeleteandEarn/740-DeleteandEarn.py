@@ -1,4 +1,4 @@
-# Last updated: 16.12.2025, 01:06:10
+# Last updated: 16.12.2025, 01:06:19
 1
 2class Solution:
 3    def deleteAndEarn(self, nums: List[int]) -> int:
