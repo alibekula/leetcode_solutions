@@ -1,18 +1,21 @@
-# Last updated: 15.12.2025, 20:17:14
+# Last updated: 15.12.2025, 20:20:31
 1class Solution:
 2    def getDescentPeriods(self, prices: List[int]) -> int:
 3        n = len(prices)
 4        total = 0
-5        stack = []
-6
-7        for i in range(n):
-8            # 4 3 2 1 8 2 
-9            if not stack or stack[-1] -1 == prices[i]:
-10                stack.append(prices[i])
-11                total += len(stack)
-12            else:
-13                stack = [prices[i]]
-14                total += 1
-15        
-16        return total
-17
+5        last = None
+6        length = 0
+7
+8        for i in range(n):
+9            # 4 3 2 1 8 2 
+10            if last is None or last-1 == prices[i]:
+11                length += 1
+12                last = prices[i]
+13                total += length
+14            else:
+15                last = prices[i]
+16                total += 1
+17                length = 1
+18        
+19        return total
+20
