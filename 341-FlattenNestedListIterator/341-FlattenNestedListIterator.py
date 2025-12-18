@@ -1,4 +1,4 @@
-# Last updated: 18.12.2025, 17:34:55
+# Last updated: 18.12.2025, 17:35:26
 1# """
 2# This is the interface that allows for creating nested lists.
 3# You should not implement it, or speculate about its implementation
@@ -28,29 +28,28 @@
 27        
 28    
 29    def next(self) -> int:
-30        self.curr = self.next_item
-31        self.next_item = None
-32        return self.curr
-33        
-34    
-35    def hasNext(self) -> bool:
-36         
-37         while self.stack:
-38
-39            curr_item = next(self.stack[-1], None)
-40
-41            if curr_item is None:
-42                self.stack.pop()
-43                continue
-44            
-45            if curr_item.isInteger():
-46                self.next_item = curr_item.getInteger()
-47                return True
-48            else:
-49                self.stack.append(iter(curr_item.getList()))
-50        
-51         return False
-52
-53# Your NestedIterator object will be instantiated and called as such:
-54# i, v = NestedIterator(nestedList), []
-55# while i.hasNext(): v.append(i.next())
+30    
+31        return self.next_item
+32        
+33    
+34    def hasNext(self) -> bool:
+35         
+36         while self.stack:
+37
+38            curr_item = next(self.stack[-1], None)
+39
+40            if curr_item is None:
+41                self.stack.pop()
+42                continue
+43            
+44            if curr_item.isInteger():
+45                self.next_item = curr_item.getInteger()
+46                return True
+47            else:
+48                self.stack.append(iter(curr_item.getList()))
+49        
+50         return False
+51
+52# Your NestedIterator object will be instantiated and called as such:
+53# i, v = NestedIterator(nestedList), []
+54# while i.hasNext(): v.append(i.next())
