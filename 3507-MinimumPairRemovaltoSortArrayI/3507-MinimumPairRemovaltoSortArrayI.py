@@ -1,4 +1,4 @@
-# Last updated: 22.01.2026, 19:41:00
+# Last updated: 22.01.2026, 19:41:10
 1import heapq
 2
 3class Solution:
@@ -44,25 +44,23 @@
 43            if r != n:
 44                if nums[j] > nums[r]: bad_pairs -= 1
 45
-46            # Выполняем слияние
-47            nums[i] = val     
-48            active[j] = False 
-49            ops += 1
-50            
-51            # Обновляем связи
-52            right[i] = r
-53            if r != n:
-54                left[r] = i
-55
-56            if l != -1:
-57                if nums[l] > nums[i]: bad_pairs += 1
-58                heapq.heappush(heap, (nums[l] + nums[i], l, i))
-59            
-60            if r != n:
-61                if nums[i] > nums[r]: bad_pairs += 1
-62                heapq.heappush(heap, (nums[i] + nums[r], i, r))
-63
-64            if bad_pairs == 0:
-65                return ops
-66
-67        return ops
+46            nums[i] = val     
+47            active[j] = False 
+48            ops += 1
+49            
+50            right[i] = r
+51            if r != n:
+52                left[r] = i
+53
+54            if l != -1:
+55                if nums[l] > nums[i]: bad_pairs += 1
+56                heapq.heappush(heap, (nums[l] + nums[i], l, i))
+57            
+58            if r != n:
+59                if nums[i] > nums[r]: bad_pairs += 1
+60                heapq.heappush(heap, (nums[i] + nums[r], i, r))
+61
+62            if bad_pairs == 0:
+63                return ops
+64
+65        return ops
