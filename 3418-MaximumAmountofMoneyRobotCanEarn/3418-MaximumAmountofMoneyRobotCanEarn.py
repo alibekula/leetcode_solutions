@@ -1,42 +1,34 @@
-# Last updated: 25.01.2026, 02:22:39
-1import sys
-2
-3# Важно: поднимаем лимит рекурсии
-4sys.setrecursionlimit(20000)
-5
-6class Solution:
-7    def maximumAmount(self, coins: List[List[int]]) -> int:
-8        n, m = len(coins), len(coins[0])
-9        
-10        # Вместо словаря используем массив.
-11        # Инициализируем None. Если там None — значит, еще не считали.
-12        memo = [[[None] * 3 for _ in range(m)] for _ in range(n)]
-13
-14        def dfs(i, j, k):
-15            if i >= n or j >= m:
-16                return float('-inf')
-17
-18            # Проверка в массиве быстрее, чем хеширование в словаре
-19            if memo[i][j][k] is not None:
-20                return memo[i][j][k]
-21
-22            val = coins[i][j]
-23
-24            # База: финиш
-25            if i == n - 1 and j == m - 1:
-26                if val < 0 and k > 0:
-27                    return 0
-28                return val
-29
-30            val_pos = val + max(dfs(i + 1, j, k), dfs(i, j + 1, k))
-31
-32            val_neg = float('-inf')
-33            if val < 0 and k > 0:
-34                val_neg = 0 + max(dfs(i + 1, j, k - 1), dfs(i, j + 1, k - 1))
-35
-36            res = max(val_pos, val_neg)
-37            
-38            memo[i][j][k] = res
-39            return res
-40
-41        return dfs(0, 0, 2)
+# Last updated: 25.01.2026, 03:33:32
+1class Solution:
+2    def maximumAmount(self, coins: List[List[int]]) -> int:
+3        
+4        n, m = len(coins), len(coins[0])
+5        dp = [[[float('-inf') for _ in range(3)] for _ in range(m+1)] for _ in range(n+1)]
+6
+7        for i in range(n-1, -1, -1):
+8            for j in range(m-1, -1, -1):
+9                val = coins[i][j]
+10
+11                for k in range(3):
+12
+13                    if i == n-1 and j == m-1:
+14                        if val < 0 and k > 0:
+15                            dp[i][j][k] = 0
+16                        else:
+17                            dp[i][j][k] = val
+18                    
+19                    else:
+20
+21                        right = dp[i+1][j][k] 
+22                        down = dp[i][j+1][k]
+23                        max_prev = max(right, down)
+24                        res_neg = float('-inf')
+25
+26                        if val < 0 and k > 0:
+27                                res_neg = max(dp[i+1][j][k-1], dp[i][j+1][k-1])
+28                        res_pos = val + max_prev
+29                        
+30                        dp[i][j][k] = max(res_pos, res_neg)
+31            
+32        return dp[0][0][2]
+33
