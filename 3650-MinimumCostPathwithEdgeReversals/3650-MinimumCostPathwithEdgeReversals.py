@@ -1,4 +1,4 @@
-# Last updated: 28.01.2026, 03:58:22
+# Last updated: 28.01.2026, 05:03:25
 1class Solution:
 2    def minCost(self, n: int, edges: List[List[int]]) -> int:
 3        
@@ -17,25 +17,23 @@
 16            graph[v].append([u, w*2])
 17        
 18        heap = [[0, 0]]
-19        visited = set()
-20
-21        while heap:
-22            score, node = heapq.heappop(heap)
-23
-24            if node == n-1:
-25                return score
-26            
-27            if node not in graph:
-28                continue
-29
-30            visited.add(node)
+19
+20        while heap:
+21            score, node = heapq.heappop(heap)
+22
+23            if node == n-1:
+24                return score
+25            
+26            if node not in graph:
+27                continue
+28            
+29            if min_dist[node] < score:
+30                continue
 31
-32            for nei, wei in graph[node]:
-33                if nei in visited:
-34                    continue
-35                
-36                if min_dist[nei] > score + wei:
-37                    heapq.heappush(heap, [score+wei, nei])
-38                    min_dist[nei] = score + wei
-39        
-40        return -1
+32
+33            for nei, wei in graph[node]:
+34                if min_dist[nei] > score + wei:
+35                    heapq.heappush(heap, [score+wei, nei])
+36                    min_dist[nei] = score + wei
+37        
+38        return -1
