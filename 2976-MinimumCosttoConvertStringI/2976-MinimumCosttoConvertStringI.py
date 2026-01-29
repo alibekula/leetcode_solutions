@@ -1,9 +1,9 @@
-# Last updated: 29.01.2026, 07:43:28
+# Last updated: 29.01.2026, 07:55:48
 1class Solution:
 2    def minimumCost(self, source: str, target: str, original: List[str], changed: List[str], cost: List[int]) -> int:
 3        
 4        graph = defaultdict(list)
-5        min_dist = {(i, i): 0 for i in original}
+5        min_dist = {(chr(i), chr(i)): 0 for i in range(ord('a'), ord('z')+1)}
 6
 7        for u, v, w in zip(original, changed, cost):
 8            graph[u].append([v, w])
@@ -30,16 +30,19 @@
 29                        min_dist[(left, nei)] = score + wei
 30                        heapq.heappush(heap, [score+wei, nei])
 31            
-32            return min_dist[(left, right)] if (left, right ) in min_dist else float('inf')
-33                    
+32            if (left, right) not in min_dist:
+33                min_dist[(left, right)] = float('inf')
 34
-35
-36        for l, r in zip(source, target):
-37            if l != r:
-38                price = get_path(l, r)
-39                if price == float('inf'):
-40                    return -1
-41                
-42                total += price
-43        
-44        return total
+35        for char1 in ''.join(chr(i) for i in range(ord('a'), ord('z')+1)):
+36            for char2 in ''.join(chr(j) for j in range(ord('z'), ord('a')-1, -1)):
+37                get_path(char1, char2)
+38
+39        for l, r in zip(source, target):
+40            if l != r:
+41                price = min_dist[l, r]
+42                if price == float('inf'):
+43                    return -1
+44                
+45                total += price
+46        
+47        return total
